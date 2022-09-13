@@ -18,7 +18,6 @@ class Adreas(models.Model):
 
 # Create your models here.
 
-
 class Testify(models.Model):
     #id=models.AutoField()
     name = models.CharField(max_length=100, verbose_name="name" ,blank=True)
