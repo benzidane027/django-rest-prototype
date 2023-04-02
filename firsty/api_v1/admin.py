@@ -1,7 +1,7 @@
 from pyexpat import model
 from django.contrib import admin
-from .models import Testify ,Adreas
+from .models import Task
 
-admin.site.register(Testify)
-admin.site.register(Adreas)
+admin.site.register(Task)
+
 # Register your models here.

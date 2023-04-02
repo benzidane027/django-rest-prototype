@@ -1,15 +1,15 @@
+import stat
 from unicodedata import name
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-import uuid
 from PIL import Image
-import pymongo
 import json
 from bson.json_util import dumps
 from pathlib import Path
 import os
-from .models import Testify
+from .models import Task
 from django.core import serializers
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,8 +19,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # upload image from api
 
 
-@api_view(["POST"])
-def index(request):
+
+
+@api_view(["GET", "POST", "PUT", "DELETE"])
+def index(req):
+    if (req.method == "GET"):
+        return Response({"data": Task.objects.all().values()}, status=200)
+    elif (req.method == "POST"):
+        obj = Task(content=req.POST.get("content"), date=req.POST.get("date"))
+        obj.save()
+        return Response({"data": ""}, status=200)
+    elif (req.method == "PUT"):
+        Task.objects.filter(date=req.POST.get("date")).update(
+            content=req.POST.get("content"))
+        return Response({"data": ""}, status=200)
+    elif (req.method == "DELETE"):
+        Task.objects.filter(date=req.POST.get("date")).delete()
+        print(req.POST.get("date"))
+        return Response({"data": ""}, status=200)
+    else:
+        return Response({"data": "error"}, status=400)
+
+
+""" def index(request):
     try:
         mfile = request.FILES.get("mfile")
         im = Image.open(request.FILES["mfile"])
@@ -30,18 +51,18 @@ def index(request):
         return Response({"data": ""}, status=200)
     except:
         return Response({"data": ""}, status=400)
-
+ """
 
 # fetch and set data into mongodb
-@api_view(["POST"])
+""" @api_view(["POST"])
 def test01(request):
     collection = database["user"]
     # collection.insert_one({"name":"mohamed"})
-    return Response({"data": json.loads(dumps(collection.find({})))}, status=200)
+    return Response({"data": json.loads(dumps(collection.find({})))}, status=200) """
 
 
 # fetch and set data into model
-@api_view(["POST"])
+""" @api_view(["POST"])
 def test02(request):
     Testify.objects.filter(name="malik").delete()
     obj = Testify(
@@ -53,3 +74,4 @@ def test02(request):
     obj.save()
     data = Testify.objects.filter().order_by("-id").values()
     return Response({"data": data}, status=200,)
+ """
